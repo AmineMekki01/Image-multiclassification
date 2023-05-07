@@ -1,0 +1,98 @@
+import tensorflow as tf
+from tensorflow.keras.layers import GlobalAveragePooling2D, Dense, Dropout, Flatten, Conv2D, MaxPooling2D
+from tensorflow.keras.models import Model, Sequential
+from tensorflow.keras.applications import ResNet152V2
+
+# Import tensorflow resources
+import tensorflow as tf
+from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.losses import CategoricalCrossentropy
+from tensorflow.keras.preprocessing import image
+
+
+class NeurofluxModel:
+    def __init__(self, model_type='pretrained', save_path=None):
+        self.model_type = model_type
+        self.save_path = save_path
+        self.model = None
+        self.history = None
+        self.CLASS_NAMES = ['EO', 'IO', 'IPTE', 'LO', 'PTE']
+        
+        if self.model_type == 'pretrained':
+            self.model = self._get_pretrained_model()
+        elif self.model_type == 'scratch':
+            self.model = self._get_scratch_model()
+    
+    def _get_pretrained_model(self):
+        base_model = ResNet152V2(include_top=False, weights='imagenet', input_shape=(256, 256, 3))
+        for layer in base_model.layers[:-15]:
+            layer.trainable = False
+
+        x = base_model.output
+        x = GlobalAveragePooling2D()(x)
+        x = Flatten()(x)
+        x = Dense(units=512, activation='relu')(x)
+        x = Dropout(0.3)(x)
+        x = Dense(units=512, activation='relu')(x)
+        x = Dropout(0.3)(x)
+        output  = Dense(units=5, activation='softmax')(x)
+        model = Model(base_model.input, output)
+                
+        return model
+    
+    def _get_scratch_model(self):
+        model = Sequential([
+            MaxPooling2D((2, 2)),
+            Conv2D(32, (3, 3), activation='relu', input_shape=(256, 256, 3)),
+            Conv2D(64, (3, 3), activation='relu'),
+            MaxPooling2D((2, 2)),
+            Conv2D(128, (3, 3), activation='relu'),
+            MaxPooling2D((2, 2)),
+            Conv2D(128, (3, 3), activation='relu'),
+            MaxPooling2D((2, 2)),
+            Flatten(),
+            Dense(512, activation='relu'),
+            Dense(len(self.CLASS_NAMES), activation='softmax')
+        ])
+        
+        return model
+    def train(self, train_data, val_data, epochs=10, batch_size=32, learning_rate= 0.001):
+    
+        # To handle data imbalance
+        class_weights = {
+            0: 1.0,  # class 1
+            1: 3.0,  # class 2
+            2: 2.0,  # class 3
+            3: 1.5,  # class 4
+            4: 1.0   # class 5
+        }
+
+        loss = CategoricalCrossentropy(class_weights)
+        optimizerLR = Adam(lr=learning_rate)
+        self.model.compile(optimizer=optimizerLR, 
+                            loss=loss, 
+                            metrics=['accuracy', 'Precision', 'Recall'])
+        self.history = self.model.fit(train_data, 
+                                        epochs=epochs, 
+                                        validation_data=val_data, 
+                                        batch_size=batch_size,
+                                        callbacks=[EarlyStopping(patience=3)])
+        
+        if self.save_path is not None:
+            self.model.save(self.save_path)
+    
+    def evaluate(self, test_data):
+        results = self.model.evaluate(test_data, return_dict=True)
+        loss = results['loss']
+        accuracy = results['accuracy']
+        print(f'Test loss: {loss:.3f}, Test accuracy: {accuracy:.3f}')
+
+    def predict(self, image_path):
+        img = image.load_img(image_path, target_size=(256, 256))
+        img_array = image.img_to_array(img)
+        img_array = tf.expand_dims(img_array, 0) / 255.
+        prediction = self.model.predict(img_array)[0]
+        predicted_class_index = np.argmax(prediction)
+        predicted_class = self.CLASS_NAMES[predicted_class_index]
+        return predicted_class
