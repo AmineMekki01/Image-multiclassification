@@ -10,6 +10,9 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.losses import CategoricalCrossentropy
 from tensorflow.keras.preprocessing import image
 
+import numpy as np
+import os 
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 class NeurofluxModel:
     def __init__(self, model_type='pretrained', save_path=None):
@@ -36,7 +39,7 @@ class NeurofluxModel:
         x = Dropout(0.3)(x)
         x = Dense(units=512, activation='relu')(x)
         x = Dropout(0.3)(x)
-        output  = Dense(units=5, activation='softmax')(x)
+        output  = Dense(units=len(self.CLASS_NAMES), activation='softmax')(x)
         model = Model(base_model.input, output)
                 
         return model
@@ -69,7 +72,7 @@ class NeurofluxModel:
         }
 
         loss = CategoricalCrossentropy(class_weights)
-        optimizerLR = Adam(lr=learning_rate)
+        optimizerLR = Adam(learning_rate=learning_rate)
         self.model.compile(optimizer=optimizerLR, 
                             loss=loss, 
                             metrics=['accuracy', 'Precision', 'Recall'])

@@ -7,8 +7,13 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 CLASS_NAMES = ['EO', 'IO', 'IPTE', 'LO', 'PTE']
 
 # Oversample minority classes
-class_weights = {0: 1, 1: 3, 2: 2, 3: 1, 4: 1}
-
+class_weights = {
+            0: 1.0,  # class 1
+            1: 3.0,  # class 2
+            2: 2.0,  # class 3
+            3: 1.5,  # class 4
+            4: 1.0   # class 5
+        }
 # some files had jpg in their extention and had some problems to upload so decided to change them to jpeg
 def change_file_extensions(data_dir, new_ext):
     # Loop through all the subdirectories (train, test, validation)
@@ -41,9 +46,7 @@ def augment_data(data_dir, batch_size=32, img_height=256, img_width=256): #, sav
     
     SEED = 1234
     tf.random.set_seed(SEED)  
-    # get class names
-    CLASS_NAMES = ['EO', 'IO', 'IPTE', 'LO', 'PTE']
-
+    
     # create a data generator
     data_gen = ImageDataGenerator(
         rescale=1./255,

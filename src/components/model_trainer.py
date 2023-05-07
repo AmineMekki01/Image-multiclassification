@@ -14,9 +14,14 @@ from src.utils import plot_history_epoch_accuracy
 
 import tensorflow as tf 
 from tensorflow.keras.preprocessing import image_dataset_from_directory
+
+
+
+
+
 if __name__ == '__main__':
     
-    # paths
+    # pathsfrom_logits
     data_dir = '/home/amine/Desktop/test_tech/data_split'
     test_data_path = '/home/amine/Desktop/test_tech/data_split/test'
     
@@ -33,10 +38,14 @@ if __name__ == '__main__':
     print('Model Trainer')
     
     # get the model from the model_class and train the model using the model class
-    model = NeurofluxModel(model_type='pretrained', save_path='./models/ResNet152V2.h5')
+    model = NeurofluxModel(model_type='scratch', save_path='./models/test_sc.h5')
+    
     model.train(train_data, validation_data, epochs=10, batch_size=32, learning_rate=1e-3)
     model.evaluate(test_data)
-    
+    print(model.model.summary())
     plot_history_epoch_accuracy(model.history)
+    
+    # get model summary 
+    
     
     
