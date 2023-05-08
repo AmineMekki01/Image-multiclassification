@@ -1,10 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Input, GlobalAveragePooling2D, Dense, Dropout, Flatten, Conv2D, MaxPooling2D
-from tensorflow.keras.models import Model, Sequential
+from tensorflow.keras.models import Model
 from tensorflow.keras.applications import ResNet152V2
-
-# Import tensorflow resources
-import tensorflow as tf
 from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.losses import CategoricalCrossentropy
@@ -12,7 +9,7 @@ from tensorflow.keras.preprocessing import image
 
 import numpy as np
 import os 
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+# os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 class NeurofluxModel:
     def __init__(self, model_type='pretrained', save_path=None):

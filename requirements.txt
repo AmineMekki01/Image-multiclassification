@@ -6,4 +6,7 @@ scikit-learn
 scipy
 tensorflow
 opencv-python
+click
+setuptools
+flask
 -e .
