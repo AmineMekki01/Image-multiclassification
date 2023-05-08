@@ -38,14 +38,17 @@ if __name__ == '__main__':
     print('Model Trainer')
     
     # get the model from the model_class and train the model using the model class
-    model = NeurofluxModel(model_type='scratch', save_path='./models/test_sc.h5')
+    model = NeurofluxModel(model_type='scratch', save_path='./models/scratch_model.h5') # change it to scratch if you want to train the scratch model
     
-    model.train(train_data, validation_data, epochs=10, batch_size=32, learning_rate=1e-3)
+    model.train(train_data, validation_data, epochs=20, batch_size=32, learning_rate=1e-3)
     model.evaluate(test_data)
     print(model.model.summary())
     plot_history_epoch_accuracy(model.history)
     
-    # get model summary 
+    # test prediction
+    test_image_path = "" # give a path to an image
+    predict_image = model.predict(test_image_path) 
+    print("the predicted class is: ", predict_image)
     
     
     

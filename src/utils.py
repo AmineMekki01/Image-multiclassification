@@ -10,3 +10,9 @@ def plot_history_epoch_accuracy(history):
     plt.legend(loc=0)
     plt.figure()
     plt.show()
+    
+    
+def check_image_extension(image_path):
+    if image_path[-4:] != 'jpeg':
+        image_path = image_path[:-4] + 'JPEG'
+    return image_path
