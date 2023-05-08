@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.keras.layers import GlobalAveragePooling2D, Dense, Dropout, Flatten, Conv2D, MaxPooling2D
+from tensorflow.keras.layers import Input, GlobalAveragePooling2D, Dense, Dropout, Flatten, Conv2D, MaxPooling2D
 from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras.applications import ResNet152V2
 
@@ -45,19 +45,20 @@ class NeurofluxModel:
         return model
     
     def _get_scratch_model(self):
-        model = Sequential([
-            MaxPooling2D((2, 2)),
-            Conv2D(32, (3, 3), activation='relu', input_shape=(256, 256, 3)),
-            Conv2D(64, (3, 3), activation='relu'),
-            MaxPooling2D((2, 2)),
-            Conv2D(128, (3, 3), activation='relu'),
-            MaxPooling2D((2, 2)),
-            Conv2D(128, (3, 3), activation='relu'),
-            MaxPooling2D((2, 2)),
-            Flatten(),
-            Dense(512, activation='relu'),
-            Dense(len(self.CLASS_NAMES), activation='softmax')
-        ])
+        inputs = Input(shape=(256, 256, 3))
+        x = MaxPooling2D((2, 2))(inputs)
+        x = Conv2D(32, (3, 3), activation='relu')(x)
+        x = Conv2D(64, (3, 3), activation='relu')(x)
+        x = MaxPooling2D((2, 2))(x)
+        x = Conv2D(128, (3, 3), activation='relu')(x)
+        x = MaxPooling2D((2, 2))(x)
+        x = Conv2D(128, (3, 3), activation='relu')(x)
+        x = MaxPooling2D((2, 2))(x)
+        x = Flatten()(x)
+        x = Dense(512, activation='relu')(x)
+        outputs = Dense(len(self.CLASS_NAMES), activation='softmax')(x)
+        
+        model = Model(inputs=inputs, outputs=outputs)
         
         return model
     def train(self, train_data, val_data, epochs=10, batch_size=32, learning_rate= 0.001):
@@ -99,3 +100,12 @@ class NeurofluxModel:
         predicted_class_index = np.argmax(prediction)
         predicted_class = self.CLASS_NAMES[predicted_class_index]
         return predicted_class
+    
+    def predict_batch(self, image_paths):
+        predictions = []
+        for image_path in image_paths:
+            predictions.append(self.predict(image_path))
+            
+        return predictions
+    
+    

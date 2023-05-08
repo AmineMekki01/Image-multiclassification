@@ -1,11 +1,13 @@
 import numpy as np 
 import os 
 import cv2
-from GAN_model import GenerativeAdversarialNetwork
 import matplotlib.pyplot as plt
 import tensorflow as tf
 from tensorflow.keras.applications.inception_v3 import InceptionV3, preprocess_input
 from scipy.linalg import sqrtm
+
+
+from GAN_model import GenerativeAdversarialNetwork
 
 
 # Detect hardware, return appropriate distribution strategy
