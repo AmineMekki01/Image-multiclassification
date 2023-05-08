@@ -1,5 +1,7 @@
 # test_tech : End To End Deep Laerning image multi classification Project.
 
+ ? The implementations are inside the src folder?
+
 ## The task :
 
 In this test im asked to classify five different phases of an imaginary disease called "Neuroflux disorder".
@@ -34,8 +36,8 @@ I have 5 folder with different number of images (Data imbalance!!)
     - components : 
         - data_augmentation_GAN : in which i was trying to implement gan and train it (i don't think i will do it, it takes a lot of time and i have other things to do : internship and my own project.)       
  
-                - GAN_model.py : GAN implemtation
-                - GAN_trainer : GAN Traning (need to finish testing to clean it)
+            - GAN_model.py : GAN implemtation
+            - GAN_trainer : GAN Traning (need to finish testing to clean it)
         - data_splitter.py : to split the data into 70% train, 15% validation and 15% test.
         - data_transformation.py : where i did a simple data augmentation using tensorflow libraries.
         - model_class.py : the module where i defined my model class of the pretrained model and scratch model.
