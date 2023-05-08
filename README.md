@@ -44,3 +44,8 @@ I have 5 folder with different number of images (Data imbalance!!)
    
         - model_trainer : the file used to train the models.
         
+### 4- Adding flask app and docker file .
+
+
+I think if i had more time for this task i could hav eexplored more ways to analyse it and push the models to the limit and try GAN (altough that there are some limitation to use in term of sample size, but there are some work arounds that can be done) 
+I didn;t have time to fully test the GAN to its limits. I only tested that it works using small number of epochs and steps.
