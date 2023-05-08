@@ -15,7 +15,7 @@ RUN pip install -r requirements.txt
 COPY models/scratch_model.h5 models/
 COPY models/pretrained_ResNet152V2.h5 models/
 
-EXPOSE 5000
+EXPOSE 6000
 
 # command to run on container start
 CMD python app.py
