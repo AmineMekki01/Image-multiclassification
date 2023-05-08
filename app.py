@@ -11,7 +11,7 @@ from src.utils import check_image_extension
 
 
 app = Flask(__name__)
-model_dir = "/home/amine/Desktop/test_tech/models/"
+model_dir = "./models/"
 
 model = load_model(os.path.join(model_dir , 'scratch_model.h5'))
 
@@ -71,6 +71,6 @@ def success():
         return render_template('index.html')
 
 if __name__ == "__main__":
-    app.run(debug = True)
+    app.run(debug = True, port=6000)
 
 
